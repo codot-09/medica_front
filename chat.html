@@ -12,24 +12,17 @@
     .glass-dark { backdrop-filter: blur(16px); background: rgba(0, 0, 0, 0.25); }
     .bubble { transition: all 0.3s ease; }
     .bubble:hover { transform: translateY(-2px) scale(1.02); }
-    .btn-hover { transition: all 0.3s ease; }
-    .btn-hover:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(135, 206, 235, 0.5); }
-    .input-focus { transition: all 0.3s ease; }
-    .input-focus:focus { box-shadow: 0 0 15px rgba(135, 206, 235, 0.5); border-color: #87CEEB; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fadeIn { animation: fadeIn 0.5s ease-out; }
-    body { transition: background 0.3s ease; }
   </style>
 </head>
-<body class="h-screen flex flex-col font-sans transition-colors duration-300 bg-gradient-to-b from-cyan-50 to-white dark:from-gray-900 dark:to-gray-800">
+<body class="h-screen flex flex-col font-sans transition-colors duration-300 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
   <!-- Header -->
   <header class="glass dark:glass-dark p-4 flex justify-between items-center shadow-lg">
     <div class="flex items-center space-x-3">
-      <img id="userAvatar" src="" class="w-12 h-12 rounded-full border-2 border-white shadow-md cursor-pointer transition-transform hover:scale-105">
-      <h1 id="userName" class="text-lg font-bold text-cyan-600 dark:text-cyan-400">Foydalanuvchi</h1>
+      <img id="userAvatar" src="" class="w-12 h-12 rounded-full border-2 border-white shadow-md cursor-pointer">
+      <h1 id="userName" class="text-lg font-bold text-blue-600 dark:text-blue-400">Foydalanuvchi</h1>
     </div>
     <div class="flex space-x-3 items-center">
-      <button id="themeToggle" class="p-2 rounded-full bg-cyan-600 text-white hover:bg-cyan-700 btn-hover transition">
+      <button id="themeToggle" class="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition">
         <i data-feather="moon"></i>
       </button>
     </div>
@@ -42,9 +35,9 @@
   <footer class="glass dark:glass-dark p-4">
     <form id="chatForm" class="flex items-center space-x-2">
       <input id="messageInput" type="text" placeholder="Xabaringizni yozing..." 
-             class="flex-1 p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-base bg-white/70 dark:bg-gray-900/70 dark:text-white input-focus">
+             class="flex-1 p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-white/70 dark:bg-gray-900/70 dark:text-white">
       <button type="submit" 
-              class="w-12 h-12 rounded-full bg-cyan-600 text-white flex items-center justify-center hover:bg-cyan-700 btn-hover shadow-md">
+              class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-md">
         <i data-feather="send"></i>
       </button>
     </form>
@@ -60,7 +53,7 @@
     const userName = document.getElementById('userName');
 
     if(user.photo_url) userAvatar.src = user.photo_url;
-    else userAvatar.src = "https://ui-avatars.com/api/?name="+(user.first_name||'F')+"&background=87CEEB&color=fff";
+    else userAvatar.src = "https://ui-avatars.com/api/?name="+(user.first_name||'F')+"&background=0d6efd&color=fff";
     userName.textContent = (user.first_name||"Foydalanuvchi")+" "+(user.last_name||"");
 
     userAvatar.addEventListener('click',()=>{
@@ -77,11 +70,11 @@
       div.classList.add('flex','items-start','space-x-3','bubble');
       if(sender==='user'){
         div.classList.add('justify-end');
-        div.innerHTML=`<div class="ml-auto bg-cyan-600 text-white p-4 rounded-3xl max-w-[75%] shadow-lg animate-fadeIn">
+        div.innerHTML=`<div class="ml-auto bg-blue-600 text-white p-4 rounded-3xl max-w-[75%] shadow-lg animate-fadeIn">
                          <p class="font-medium">Siz</p><p class="mt-1">${text}</p></div>`;
       } else {
         div.innerHTML=`<div class="glass dark:glass-dark shadow-lg p-4 rounded-3xl max-w-[75%] animate-fadeIn">
-                         <p class="font-medium text-cyan-600 dark:text-cyan-400">Dr. AI</p><p class="mt-1">${text}</p></div>`;
+                         <p class="font-medium text-blue-600 dark:text-blue-400">Dr. AI</p><p class="mt-1">${text}</p></div>`;
       }
       chatBox.appendChild(div); chatBox.scrollTop=chatBox.scrollHeight;
     }
