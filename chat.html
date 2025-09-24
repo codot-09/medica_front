@@ -3,67 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
+  <title>Chat - WebApp</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    .gradient-btn { background: linear-gradient(135deg, #22c55e, #15803d); }
-    .gradient-btn:hover { opacity: 0.9; transform: scale(1.05); }
-    .glass { backdrop-filter: blur(12px); background: rgba(255,255,255,0.25); }
-    .dark .glass { background: rgba(30,30,30,0.4); }
-    .fade-in { animation: fadeIn 0.6s ease forwards; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .glass { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.25); }
+    .glass-dark { backdrop-filter: blur(16px); background: rgba(0, 0, 0, 0.25); }
+    .bubble { transition: all 0.3s ease; }
+    .bubble:hover { transform: translateY(-2px) scale(1.02); }
   </style>
 </head>
-<body class="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 font-sans h-screen flex flex-col transition-colors duration-500">
-  <header class="bg-green-600 dark:bg-gray-900 text-white px-4 py-3 shadow-lg transition-colors duration-500">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <img id="userAvatar" src="" class="w-12 h-12 rounded-full border-2 border-white shadow-md cursor-pointer">
-        <div>
-          <h1 id="userFullName" class="text-lg font-bold">Foydalanuvchi</h1>
-          <p id="userName" class="text-xs text-green-100 dark:text-gray-400">...</p>
-        </div>
-      </div>
-      <div class="flex items-center space-x-3">
-        <button id="themeToggle" class="p-2 rounded-full bg-white/20 hover:bg-white/30 transition">
-          <i data-feather="moon"></i>
-        </button>
-      </div>
+<body class="h-screen flex flex-col font-sans transition-colors duration-300 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+  <!-- Header -->
+  <header class="glass dark:glass-dark p-4 flex justify-between items-center shadow-lg">
+    <div class="flex items-center space-x-3">
+      <img id="userAvatar" src="" class="w-12 h-12 rounded-full border-2 border-white shadow-md cursor-pointer">
+      <h1 id="userName" class="text-lg font-bold text-blue-600 dark:text-blue-400">Foydalanuvchi</h1>
+    </div>
+    <div class="flex space-x-3 items-center">
+      <button id="themeToggle" class="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition">
+        <i data-feather="moon"></i>
+      </button>
     </div>
   </header>
 
-  <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-6"></div>
+  <!-- Chat -->
+  <main id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-6"></main>
 
-  <div class="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 transition-colors duration-500">
+  <!-- Input -->
+  <footer class="glass dark:glass-dark p-4">
     <form id="chatForm" class="flex items-center space-x-2">
-      <input type="text" id="messageInput" placeholder="Xabaringizni yozing..." class="flex-1 p-4 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-base glass dark:text-white transition-colors duration-500">
-      <button type="submit" class="w-12 h-12 rounded-full gradient-btn text-white flex items-center justify-center shadow-md transition">
+      <input id="messageInput" type="text" placeholder="Xabaringizni yozing..." 
+             class="flex-1 p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-white/70 dark:bg-gray-900/70 dark:text-white">
+      <button type="submit" 
+              class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-md">
         <i data-feather="send"></i>
       </button>
     </form>
-  </div>
+  </footer>
 
   <script>
     feather.replace();
 
     const tg = window.Telegram.WebApp;
     tg.expand();
-
     const user = tg.initDataUnsafe.user || {};
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
-    const userFullName = document.getElementById('userFullName');
 
     if(user.photo_url) userAvatar.src = user.photo_url;
-    else userAvatar.src = "https://ui-avatars.com/api/?name="+(user.first_name||'F')+"&background=22c55e&color=fff";
-
-    userFullName.textContent = (user.first_name||"Foydalanuvchi")+" "+(user.last_name||"");
-    userName.textContent = user.username ? "@"+user.username : "";
+    else userAvatar.src = "https://ui-avatars.com/api/?name="+(user.first_name||'F')+"&background=0d6efd&color=fff";
+    userName.textContent = (user.first_name||"Foydalanuvchi")+" "+(user.last_name||"");
 
     userAvatar.addEventListener('click',()=>{
       localStorage.setItem('tgUser', JSON.stringify(user));
@@ -76,18 +67,14 @@
 
     function addMessage(text,sender){
       const div=document.createElement('div');
-      div.classList.add('fade-in');
-
+      div.classList.add('flex','items-start','space-x-3','bubble');
       if(sender==='user'){
-        div.classList.add('flex','justify-end');
-        div.innerHTML=`<div class="ml-auto gradient-btn text-white p-4 rounded-3xl max-w-[75%] shadow-lg transform transition hover:scale-105">
-          <p class="font-medium">Siz</p><p class="mt-1">${text}</p>
-        </div>`;
+        div.classList.add('justify-end');
+        div.innerHTML=`<div class="ml-auto bg-blue-600 text-white p-4 rounded-3xl max-w-[75%] shadow-lg animate-fadeIn">
+                         <p class="font-medium">Siz</p><p class="mt-1">${text}</p></div>`;
       } else {
-        div.classList.add('flex','justify-start');
-        div.innerHTML=`<div class="glass dark:bg-gray-700/60 shadow-lg p-4 rounded-3xl max-w-[75%] transform transition hover:scale-105">
-          <p class="font-medium text-green-600 dark:text-green-400">Dr. AI</p><p class="mt-1 text-gray-800 dark:text-gray-200">${text}</p>
-        </div>`;
+        div.innerHTML=`<div class="glass dark:glass-dark shadow-lg p-4 rounded-3xl max-w-[75%] animate-fadeIn">
+                         <p class="font-medium text-blue-600 dark:text-blue-400">Dr. AI</p><p class="mt-1">${text}</p></div>`;
       }
       chatBox.appendChild(div); chatBox.scrollTop=chatBox.scrollHeight;
     }
@@ -98,17 +85,14 @@
       if(message){ 
         addMessage(message,'user'); 
         messageInput.value='';
-        setTimeout(()=>{ addMessage("Rahmat, savolingiz qabul qilindi ✅",'ai'); },1000);
+        setTimeout(()=>{ addMessage("Savolingiz qabul qilindi ✅",'ai'); },1000);
       }
     });
 
-    // Dark mode
     const themeToggle=document.getElementById('themeToggle');
-    const html=document.documentElement;
-    if(localStorage.getItem('theme')==='dark') html.classList.add('dark');
     themeToggle.addEventListener('click',()=>{
-      html.classList.toggle('dark');
-      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+      document.documentElement.classList.toggle('dark');
+      feather.replace();
     });
   </script>
 </body>

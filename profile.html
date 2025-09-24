@@ -5,18 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profil</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .glass { backdrop-filter: blur(12px); background: rgba(255,255,255,0.25); }
-    .dark .glass { background: rgba(30,30,30,0.4); }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 h-screen flex items-center justify-center font-sans transition-colors duration-500">
-  <div class="glass shadow-xl p-6 rounded-3xl w-80 text-center">
-    <img id="avatar" src="" class="w-28 h-28 rounded-full mx-auto border-4 border-green-500 shadow-lg">
-    <h2 id="fullName" class="mt-4 text-xl font-bold text-green-700 dark:text-green-400"></h2>
-    <p id="username" class="text-gray-500 dark:text-gray-300"></p>
-    <p id="chatId" class="text-sm text-gray-400 mt-2"></p>
-    <button onclick="window.location.href='chat.html'" class="mt-6 w-full py-3 bg-green-600 text-white rounded-full hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 transition">Orqaga</button>
+<body class="h-screen flex items-center justify-center font-sans bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 transition">
+  <div class="glass dark:glass-dark shadow-2xl p-6 rounded-3xl w-96 text-center">
+    <img id="avatar" src="" class="w-24 h-24 rounded-full mx-auto border-4 border-blue-500 shadow-lg">
+    <h2 id="fullName" class="mt-4 text-xl font-bold text-blue-700 dark:text-blue-400"></h2>
+    <p id="username" class="text-gray-600 dark:text-gray-300"></p>
+    <p id="chatId" class="text-sm text-gray-500 mt-2"></p>
+
+    <!-- BPM Section -->
+    <div class="mt-6">
+      <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400">Yurak BPM</h3>
+      <canvas id="bpmChart" class="mt-3"></canvas>
+    </div>
+
+    <button onclick="window.location.href='chat.html'" 
+            class="mt-6 w-full py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
+      Orqaga
+    </button>
   </div>
 
   <script>
@@ -25,6 +32,18 @@
     document.getElementById('fullName').textContent = (user.first_name||'')+" "+(user.last_name||'');
     document.getElementById('username').textContent = user.username ? "@"+user.username : "";
     document.getElementById('chatId').textContent = "Chat ID: "+(user.id||"Noma'lum");
+
+    const ctx = document.getElementById('bpmChart').getContext('2d');
+    const bpmData = { labels: [], datasets: [{ label: 'BPM', data: [], borderColor: '#0d6efd', backgroundColor: 'rgba(13,110,253,0.2)', fill: true, tension: 0.4 }] };
+    const bpmChart = new Chart(ctx, { type: 'line', data: bpmData, options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{min:50,max:120}} } });
+
+    setInterval(()=>{
+      const bpm = 60 + Math.floor(Math.random()*40);
+      if(bpmData.labels.length>15){ bpmData.labels.shift(); bpmData.datasets[0].data.shift(); }
+      bpmData.labels.push('');
+      bpmData.datasets[0].data.push(bpm);
+      bpmChart.update();
+    }, 1000);
   </script>
 </body>
 </html>
