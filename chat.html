@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dr. AI - Telegram WebApp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    .gradient-btn { background: linear-gradient(135deg, #22c55e, #15803d); }
+    .gradient-btn:hover { opacity: 0.9; }
+    .glass { backdrop-filter: blur(12px); background: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-green-50 to-white font-sans h-screen flex flex-col">
+  <header class="bg-green-600 text-white px-4 py-3 shadow-lg">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img id="userAvatar" src="" class="w-12 h-12 rounded-full border-2 border-white shadow-md cursor-pointer" id="profileBtn">
+        <div>
+          <h1 class="text-lg font-bold">Dr. AI</h1>
+          <p id="userName" class="text-xs text-green-100">Foydalanuvchi</p>
+        </div>
+      </div>
+      <button class="bg-white text-green-600 px-4 py-2 rounded-full text-sm shadow-md flex items-center space-x-2">
+        <i data-feather="video"></i>
+        <span>Jonli</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-6"></div>
+
+  <div class="p-4 bg-white border-t border-gray-200">
+    <form id="chatForm" class="flex items-center space-x-2">
+      <input type="text" id="messageInput" placeholder="Xabaringizni yozing..." class="flex-1 p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 text-base glass">
+      <button type="submit" class="w-12 h-12 rounded-full gradient-btn text-white flex items-center justify-center shadow-md hover:scale-110 transition">
+        <i data-feather="send"></i>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    feather.replace();
+
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // fullscreen
+
+    const user = tg.initDataUnsafe.user || {};
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+
+    if(user.photo_url) userAvatar.src = user.photo_url;
+    else userAvatar.src = "https://ui-avatars.com/api/?name="+(user.first_name||'F')+"&background=22c55e&color=fff";
+
+    userName.textContent = (user.first_name||"Foydalanuvchi")+" "+(user.last_name||"");
+
+    userAvatar.addEventListener('click',()=>{
+      localStorage.setItem('tgUser', JSON.stringify(user));
+      window.location.href = 'profile.html';
+    });
+
+    const chatForm=document.getElementById('chatForm');
+    const messageInput=document.getElementById('messageInput');
+    const chatBox=document.getElementById('chatBox');
+
+    function addMessage(text,sender){
+      const div=document.createElement('div');
+      div.classList.add('flex','items-start','space-x-3');
+      if(sender==='user'){
+        div.classList.add('justify-end');
+        div.innerHTML=`<div class="ml-auto gradient-btn text-white p-4 rounded-3xl max-w-[75%] shadow-lg"><p class="font-medium">Siz</p><p class="mt-1">${text}</p></div>`;
+      } else {
+        div.innerHTML=`<div class="glass shadow-lg p-4 rounded-3xl max-w-[75%]"><p class="font-medium text-green-600">Dr. AI</p><p class="text-gray-800 mt-1">${text}</p></div>`;
+      }
+      chatBox.appendChild(div); chatBox.scrollTop=chatBox.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const message=messageInput.value.trim();
+      if(message){ 
+        addMessage(message,'user'); 
+        messageInput.value='';
+        setTimeout(()=>{ addMessage("Rahmat, savolingiz qabul qilindi ✅",'ai'); },1000);
+      }
+    });
+  </script>
+</body>
+</html>

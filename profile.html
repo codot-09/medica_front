@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-green-50 to-white h-screen flex items-center justify-center font-sans">
+  <div class="bg-white shadow-xl p-6 rounded-3xl w-80 text-center">
+    <img id="avatar" src="" class="w-24 h-24 rounded-full mx-auto border-4 border-green-500 shadow-lg">
+    <h2 id="fullName" class="mt-4 text-xl font-bold text-green-700"></h2>
+    <p id="username" class="text-gray-500"></p>
+    <p id="chatId" class="text-sm text-gray-400 mt-2"></p>
+    <button onclick="window.location.href='chat.html'" class="mt-6 w-full py-3 bg-green-600 text-white rounded-full hover:bg-green-700">Orqaga</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem('tgUser')) || {};
+    document.getElementById('avatar').src = user.photo_url || "https://ui-avatars.com/api/?name="+(user.first_name||'F');
+    document.getElementById('fullName').textContent = (user.first_name||'')+" "+(user.last_name||'');
+    document.getElementById('username').textContent = user.username ? "@"+user.username : "";
+    document.getElementById('chatId').textContent = "Chat ID: "+(user.id||"Noma'lum");
+  </script>
+</body>
+</html>
